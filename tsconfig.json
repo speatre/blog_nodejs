@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+      "target": "es2016",
+      "module": "commonjs",
+      "rootDir": ".",
+      "outDir": "./dist",
+      "esModuleInterop": true,
+      "forceConsistentCasingInFileNames": true,
+      "strict": true,
+      "skipLibCheck": true,
+      "noImplicitAny": true, 
+      "noUnusedLocals": true,
+      "noUnusedParameters": true,
+      "allowSyntheticDefaultImports": true,
+      "types": ["node", "jest"],
+      "noEmitOnError": true,
+      "declaration": false,
+      "emitDeclarationOnly": false
+    },
+    "include": ["src/**/*.ts", "tests"],
+    "exclude": ["node_modules", "dist", "src/**/*.d.ts"]
+}
