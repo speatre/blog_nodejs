@@ -9,7 +9,7 @@ import { SALT_ROUNDS } from "../../config/config";
 
 /**
  * @openapi
- * api/auth/signup:
+ * /api/auth/signup:
  *   post:
  *     summary: Register a new user
  *     tags: [Auth]

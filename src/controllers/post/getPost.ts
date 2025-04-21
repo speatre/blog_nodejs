@@ -111,7 +111,7 @@ import {
  */
 
 /*
-    [GET] posts/
+    [GET] api/posts/
     API for getting posts with pagination and preview (first 1000 characters of content)
 */
 async function getPost(req: PostRequest<object, PostRequestQuery>, res: Response): Promise<void> {

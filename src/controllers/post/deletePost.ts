@@ -7,7 +7,7 @@ import { modelCrud } from "../../utils";
 
 /**
  * @openapi
- * api/posts/{postId}:
+ * /api/posts/{postId}:
  *   delete:
  *     summary: Delete a post (soft delete)
  *     tags: [Posts]

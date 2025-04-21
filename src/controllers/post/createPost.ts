@@ -7,7 +7,7 @@ import { modelCrud } from "../../utils";
 
 /**
  * @openapi
- * api/posts:
+ * /api/posts:
  *   post:
  *     summary: Create a new post
  *     tags: [Posts]
