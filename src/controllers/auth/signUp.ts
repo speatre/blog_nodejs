@@ -94,7 +94,7 @@ async function signUp(req: AuthRequest<AuthRequestBody>, res: Response): Promise
                 password: hashedPassword
             }
         );
-        logger.system.info("signUp",{ email }, "User registered successfully");
+        logger.system.info("signUp", { email }, "User registered successfully");
         res.status(200).json({ message: "User registered successfully" });
     } catch (error) {
         logger.system.error("signUp", { email }, `Registration error: ${(error as Error).message}`);

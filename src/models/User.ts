@@ -5,6 +5,11 @@ const userModel = (sequelize: Sequelize, DataTypes: any): typeof Model => {
         declare id: number;
         declare email: string;
         declare password: string;
+        declare firstName: string | null;
+        declare lastName: string | null;
+        declare phoneNumber: string | null;
+        declare role: 'admin' | 'user';
+        declare refreshToken: string | null;
         declare is_deleted: boolean;
         declare created_at: Date;
 
@@ -38,6 +43,27 @@ const userModel = (sequelize: Sequelize, DataTypes: any): typeof Model => {
             password: {
                 type: DataTypes.STRING,
                 allowNull: false,
+            },
+            firstName: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            lastName: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            phoneNumber: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            role: {
+                type: DataTypes.ENUM('admin', 'user'),
+                allowNull: false,
+                defaultValue: 'user',
+            },
+            refreshToken: {
+                type: DataTypes.TEXT,
+                allowNull: true,
             },
             is_deleted: {
                 type: DataTypes.BOOLEAN,

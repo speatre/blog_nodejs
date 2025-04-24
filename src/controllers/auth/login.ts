@@ -78,32 +78,60 @@ import { AuthRequest, AuthRequestBody } from "./types";
     [POST] api/login
     API for log in
  */
-async function login(req: AuthRequest<AuthRequestBody>, res: Response): Promise<void> {
-    const { email, password } = req.body as AuthRequestBody;
-  
-    try {
-        const user = await db.users.findOne({ where: { email, is_deleted: 0 } });
-        if (!user) {
-            logger.system.warn("login", { email }, "User not found");
-            res.status(401).json({ message: "Invalid credentials" });
-            return;
-        }
-        // Comparing password
-        const isPasswordValid = await bcryptjs.compare(password, user.password);
-        if (!isPasswordValid) {
-            logger.system.warn("login", { email }, "Invalid password");
-            res.status(401).json({ message: "Invalid credentials" });
-            return;
-        }
-        const payload = { email: user.email };
-        const token = tokenHandler.generateJWTAccessToken(payload);
-        const refreshToken = tokenHandler.generateJWTRefreshToken(payload);
-        logger.system.info("login", { email }, "`User logged in successfully");
-        res.status(200).json({ token, refreshToken });
-    } catch (error) {
-        logger.system.error("login", { email },`Login error: ${(error as Error).message}`);
-        res.status(500).json({ message: "Server error" });
-    }
-};
+    async function login(req: AuthRequest<AuthRequestBody>, res: Response): Promise<void> {
+        const { email, password } = req.body as AuthRequestBody;
+    
 
-export default login;
+        try {
+            const user = await db.users.findOne({
+                where: { email, is_deleted: 0 },
+            });    
+            if (!user) {
+                logger.system.warn("login", { email }, "User not found");
+                res.status(401).json({ message: "Invalid credentials" });
+                return;
+            }
+
+            // Validate password
+            const isPasswordValid = await bcryptjs.compare(password, user.password);
+            if (!isPasswordValid) {
+                logger.system.warn("login", { email }, "Invalid password");
+                res.status(401).json({ message: "Invalid credentials" });
+                return;
+            }
+
+            // Generate tokens
+            const payload = { id: user.id, email: user.email, role: user.role };
+            const accessToken = tokenHandler.generateJWTAccessToken(payload);
+            const refreshToken = tokenHandler.generateJWTRefreshToken(payload);
+
+            // Update refreshToken in database
+            await user.update({ refreshToken });
+
+  
+            // Compute display_name
+            const displayName = [user.firstName, user.lastName].filter(Boolean).join(" ") || user.email;
+    
+            // Log success
+            logger.system.info("login", { email }, "User logged in successfully");
+    
+            // Send response matching TODO format
+            res.status(200).json({
+                access_token: accessToken,
+                refresh_token: refreshToken,
+                user: {
+                    id: user.id.toString(),
+                    username: user.email, // Use email as username since schema lacks username
+                    email: user.email,
+                    display_name: displayName,
+                    avatar_url: null, // Placeholder; update if avatar_url is added to schema
+                    role: user.role,
+                },
+            });
+        } catch (error) {
+            logger.system.error("login", { email }, `Login error: ${(error as Error).message}`);
+            res.status(500).json({ message: "Server error" });
+        }
+    }
+    
+  export default login;
